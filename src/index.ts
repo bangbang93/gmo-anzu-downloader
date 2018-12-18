@@ -14,8 +14,12 @@ import * as path from 'path'
   let i = 0
   for (const url of urls) {
     console.log(`wallpaper ${++i} / ${urls.length}`)
+    const filename = path.join('download', url.includes('SP')? 'phone': 'pc', path.basename(url))
+    if (await fs.pathExists(filename)) {
+      continue
+    }
     const file = await request.get('https://cloud.gmo.jp/anzu/' + url, {encoding: null})
-    await fs.outputFile(path.join('download', url.includes('SP')? 'phone': 'pc', path.basename(url)), file)
+    await fs.outputFile(filename, file)
   }
 
   //em
@@ -25,7 +29,11 @@ import * as path from 'path'
   i = 0
   for (const url of urls) {
     console.log(`emoji ${++i} / ${urls.length}`)
+    const filename = path.join('download/emotion', path.basename(url))
+    if (await fs.pathExists(filename)) {
+      continue
+    }
     const file = await request.get('https://cloud.gmo.jp/anzu/' + url, {encoding: null})
-    await fs.outputFile(path.join('download/emotion', path.basename(url)), file)
+    await fs.outputFile(filename, file)
   }
 })()
