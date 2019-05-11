@@ -11,7 +11,7 @@
     "url": "git+ssh://git@github.com/bangbang93/gmo-anzu-downloader.git"
   },
   "author": "",
-  "license": "GPL",
+  "license": "GLWTPL",
   "bugs": {
     "url": "https://github.com/bangbang93/gmo-anzu-downloader/issues"
   },
@@ -19,14 +19,13 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.7",
     "@types/fs-extra": "^5.0.3",
-    "@types/request-promise": "^4.1.41",
+    "@types/got": "^9.4.4",
     "ts-node": "^6.1.2"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "fs-extra": "^6.0.1",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.2",
+    "got": "^9.6.0",
     "typescript": "^2.9.2"
   }
 }

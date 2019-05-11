@@ -1,13 +1,13 @@
-import * as request from 'request-promise'
 import * as fs from 'fs-extra'
 import * as cheerio from 'cheerio'
+import * as got from 'got'
 import * as path from 'path'
 
 
 (async function main() {
   //wallpaper
-  const page = await request.get('https://cloud.gmo.jp/anzu/')
-  const $ = cheerio.load(page)
+  const page = await got.get('https://cloud.gmo.jp/anzu/')
+  const $ = cheerio.load(page.body)
   let links = $('.remodal li a')
   let urls: string[] = links.map((i, link) => cheerio(link).attr('href')).toArray() as any[]
 
@@ -18,7 +18,7 @@ import * as path from 'path'
     if (await fs.pathExists(filename)) {
       continue
     }
-    const file = await request.get('https://cloud.gmo.jp/anzu/' + url, {encoding: null})
+    const file = await got.get('https://cloud.gmo.jp/anzu/' + url, {encoding: null})
     await fs.outputFile(filename, file)
   }
 
@@ -33,7 +33,7 @@ import * as path from 'path'
     if (await fs.pathExists(filename)) {
       continue
     }
-    const file = await request.get('https://cloud.gmo.jp/anzu/' + url, {encoding: null})
+    const file = await got.get('https://cloud.gmo.jp/anzu/' + url, {encoding: null})
     await fs.outputFile(filename, file)
   }
 })()
