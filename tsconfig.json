@@ -1,8 +1,7 @@
 {
+  "extends": "@tsconfig/node18",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "esnext",
-    "sourceMap": true
+    "outDir": "lib"
   },
   "exclude": [
     "node_modules"
