@@ -1,5 +1,5 @@
 name: build test
-on: [push]
+on: [ push ]
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
         with:
           node-version: 18.x
       - name: setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node
