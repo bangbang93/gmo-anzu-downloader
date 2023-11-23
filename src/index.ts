@@ -1,46 +1,50 @@
-import path from "path"
-import cheerio from "cheerio"
-import * as fse from "fs-extra"
-import got from "got"
+import { basename, dirname, join } from 'path'
+import cheerio from 'cheerio'
+import fse from 'fs-extra'
+import got from 'got'
 
-const BASE = "https://cloud.gmo.jp/anzu/"
+const BASE = 'https://conoha.mikumo.com'
+
+const request = got.extend({
+  prefixUrl: BASE,
+  https: {
+    rejectUnauthorized: false,
+  },
+})
 
 //wallpaper
-const page = await got.get(BASE)
+const page = await request.get('anzu')
 const $ = cheerio.load(page.body)
-const links = $(".remodal li a")
-let urls = links
-  .map((i, link) => cheerio(link).attr("href"))
-  .toArray() as unknown as string[]
+await fetchPhoneImages($)
+await fetchPcImages($)
 
-let i = 0
-for (const url of urls) {
-  console.log(`wallpaper ${++i} / ${urls.length}`)
-  const filename = path.join(
-    "download",
-    url.includes("SP") ? "phone" : "pc",
-    path.basename(url),
-  )
-  if (await fse.pathExists(filename)) {
-    continue
-  }
-  const file = await got.get(`${BASE}${url}`, { responseType: "buffer" })
-  await fse.outputFile(filename, file)
+async function fetchPhoneImages($: CheerioStatic): Promise<void> {
+  const urls = $('.listWallpaper_item .inputSelectUnit:nth-child(1) li a')
+    .map((i, link) => cheerio(link).attr('href'))
+    .toArray() as unknown as string[]
+
+  await downloadUrls(urls, 'phone')
 }
 
-//em
-const ems = $(".stamp-wrap img")
-urls = ems
-  .map((i, em) => cheerio(em).attr("src"))
-  .toArray() as unknown as string[]
+async function fetchPcImages($: CheerioStatic): Promise<void> {
+  const urls = $('.listWallpaper_item .inputSelectUnit:nth-child(2) li a')
+    .map((i, link) => cheerio(link).attr('href'))
+    .toArray() as unknown as string[]
+  await downloadUrls(urls, 'pc')
+}
 
-i = 0
-for (const url of urls) {
-  console.log(`emoji ${++i} / ${urls.length}`)
-  const filename = path.join("download/emotion", path.basename(url))
-  if (await fse.pathExists(filename)) {
-    continue
+async function downloadUrls(urls: string[], path: string): Promise<void> {
+  for (const [i, url] of urls.entries()) {
+    console.log(`${path} ${i} / ${urls.length}`)
+    const fileIndex = basename(dirname(url))
+    const filename = join('download', path, `${fileIndex}_${basename(url)}`)
+    if (await fse.pathExists(filename)) {
+      continue
+    }
+    console.log(url)
+    const file = await request.get(url.replace(/^\//, ''), {
+      responseType: 'buffer',
+    })
+    await fse.outputFile(filename, file.body)
   }
-  const file = await got.get(`${BASE}${url}`, { responseType: "buffer" })
-  await fse.outputFile(filename, file)
 }
