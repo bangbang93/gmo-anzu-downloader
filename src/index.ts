@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'path'
+import {basename, dirname, join} from 'path'
 import cheerio from 'cheerio'
 import fse from 'fs-extra'
 import got from 'got'

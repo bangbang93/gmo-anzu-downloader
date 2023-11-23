@@ -1,0 +1,9 @@
+extends:
+  - '@bangbang93/recommended'
+  - 'prettier'
+plugins:
+  - prettier
+parser: '@typescript-eslint/parser'
+rules:
+  prettier/prettier: error
+  no-console: off
